@@ -14,4 +14,5 @@ class IndexController extends Controller{
         $this->layout = "layout1";
         return $this->render("index");
     }
+
 }
