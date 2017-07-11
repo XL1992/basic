@@ -47,7 +47,9 @@
                             <td><?php echo long2ip($manager->loginip); ?></td>
                             <td><?php echo date('Y-m-d H:i:s', $manager->createtime);; ?></td>
                             <td class="align-right">
-                                <a href="<?php echo yii\helpers\Url::to(['manage/del','adminid'=>$manager->adminid]); ?>" onclick="return confirm('确定要删除吗？')">删除</a></td>
+                                <a href="<?php echo yii\helpers\Url::to(['manage/del', 'adminid' => $manager->adminid]); ?>"
+                                   onclick="return confirm('确定要删除吗？')">删除</a>
+                            </td>
                         </tr>
                         <!-- row -->
                         <?php
@@ -56,7 +58,7 @@
                     </tbody>
                 </table>
                 <?php
-                if (Yii::$app->session->hasFlash('info')){
+                if (Yii::$app->session->hasFlash('info')) {
                     echo Yii::$app->session->getFlash('info');
                 }
                 ?>

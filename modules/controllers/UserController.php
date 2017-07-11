@@ -9,6 +9,7 @@
 namespace app\modules\controllers;
 
 use yii\data\Pagination;
+use yii\db\Exception;
 use yii\web\Controller;
 use Yii;
 use app\models\User;
@@ -42,5 +43,31 @@ class UserController extends Controller
         $pager = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
         $users = $model->offset($pager->offset)->limit($pager->limit)->all();
         return $this->render('users', ['users' => $users, 'pager' => $pager]);
+    }
+
+    public function actionDel()
+    {
+        try {
+            $userid = Yii::$app->request->get('userid');
+            if (empty($userid)) {
+                throw new \Exception();
+            }
+            $trans = Yii::$app->db->beginTransaction();
+            if ($obg = Profile::find()->where('userid = :userid', [':userid' => $userid])->one()) {
+                $res = Profile::deleteAll('userid = :userid', [':userid' => $userid]);
+                if (empty($res)){
+                    throw new \Exception();
+                }
+            }
+            if (!User::deleteAll('userid = :userid',[':userid'=>$userid])){
+                throw new \Exception();
+            }
+            $trans->commit();
+        } catch (\Exception $e) {
+            if (Yii::$app->db->getTransaction()){
+                $trans->rollBack();
+            }
+        }
+        $this->redirect(['user/users']);
     }
 }

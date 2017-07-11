@@ -7,14 +7,25 @@
  */
 
 namespace app\controllers;
-
 use yii\web\Controller;
-
+use app\models\User;
+use Yii;
 class MemberController extends Controller
 {
     public function actionAuth()
     {
         $this->layout = "layout2";
-        return $this->render("auth");
+        $model = new User();
+
+        return $this->render("auth",['model'=>$model]);
+    }
+
+    public function actionReg(){
+        $model = new User();
+        if(Yii::$app->request->isPost){
+            $post = Yii::$app->request->post();
+            if ($model->regByMail($post)){
+            }
+        }
     }
 }

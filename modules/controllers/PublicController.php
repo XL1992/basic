@@ -25,7 +25,6 @@ class PublicController extends Controller
                 Yii::$app->end();
             }
         }
-
         return $this->render("login", ['model' => $model]);
     }
 
@@ -38,18 +37,19 @@ class PublicController extends Controller
             Yii::$app->end();
         }
         $this->goBack();
+
     }
 
     public function actionSeekpassword()
     {
-        $this->layout=false;
+        $this->layout = false;
         $model = new Admin();
-        if (Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             $post = Yii::$app->request->post();
-            if ($model->seekPass($post)){
-                Yii::$app->session->setFlash('info','电子邮件发送成功');
+            if ($model->seekPass($post)) {
+                Yii::$app->session->setFlash('info', '电子邮件发送成功');
             }
         }
-        return $this->render("seekpassword",['model' => $model]);
+        return $this->render("seekpassword", ['model' => $model]);
     }
 }
