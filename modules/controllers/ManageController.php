@@ -12,8 +12,9 @@ use app\modules\models\Admin;
 use yii\web\Controller;
 use Yii;
 use yii\data\Pagination;
+use app\modules\controllers\CommonController;
 
-class ManageController extends Controller
+class ManageController extends CommonController
 {
 
     public function actionMailchangepass()
@@ -105,7 +106,7 @@ class ManageController extends Controller
         if (Yii::$app->request->isPost) {
             $post = Yii::$app->request->post();
             if ($model->changePass($post)) {
-                Yii::$app->session->setFlash('info','修改成功');
+                Yii::$app->session->setFlash('info', '修改成功');
             }
 
         }

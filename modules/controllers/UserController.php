@@ -14,8 +14,9 @@ use yii\web\Controller;
 use Yii;
 use app\models\User;
 use app\models\Profile;
+use app\modules\controllers\CommonController;
 
-class UserController extends Controller
+class UserController extends CommonController
 {
     public function actionReg()
     {
