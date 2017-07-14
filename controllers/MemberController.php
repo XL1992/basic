@@ -7,25 +7,36 @@
  */
 
 namespace app\controllers;
+
 use yii\web\Controller;
 use app\models\User;
 use Yii;
+
 class MemberController extends Controller
 {
     public function actionAuth()
     {
         $this->layout = "layout2";
         $model = new User();
-
-        return $this->render("auth",['model'=>$model]);
-    }
-
-    public function actionReg(){
-        $model = new User();
-        if(Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             $post = Yii::$app->request->post();
-            if ($model->regByMail($post)){
+            if ($model->login($post)) {
+                Yii::$app->session->setFlash('info','登录成功');
             }
         }
+        return $this->render("auth", ['model' => $model]);
+    }
+
+    public function actionReg()
+    {
+        $model = new User();
+        if (Yii::$app->request->isPost) {
+            $post = Yii::$app->request->post();
+            if ($model->regByMail($post)) {
+                Yii::$app->session->setFlash('info', '电子邮件发送成功');
+            }
+        }
+        $this->layout = 'layout2';
+        return $this->render('auth', ['model' => $model]);
     }
 }

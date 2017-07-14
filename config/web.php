@@ -33,8 +33,8 @@ $config = [
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.163.com',
-                'username' => 'shop_imooc@163.com',
-                'password' => 'xiaolei19920227',
+                'username' => '15122644296@163.com',
+                'password' => 'xiaolei1992',
                 'port' => '465',
                 'encryption' => 'ssl',
             ],
