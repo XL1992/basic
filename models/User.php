@@ -101,8 +101,10 @@ class User extends ActiveRecord
             $lifetime = $this->rememberMe ? 24 * 3600 : 0;
             $session = Yii::$app->session;
             session_set_cookie_params($lifetime);
-            $session['loginname'] = $this->loginname;
-            $session['isLogin'] = 1;
+            $session['user'] = [
+                'loginname'=> $this->loginname,
+                'isLogin'=>'1',
+            ];
             return (bool)$session['isLogin'];
         }
         return false;

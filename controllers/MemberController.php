@@ -21,7 +21,7 @@ class MemberController extends Controller
         if (Yii::$app->request->isPost) {
             $post = Yii::$app->request->post();
             if ($model->login($post)) {
-                Yii::$app->session->setFlash('info','登录成功');
+                Yii::$app->session->setFlash('info', '登录成功');
             }
         }
         return $this->render("auth", ['model' => $model]);
@@ -38,5 +38,12 @@ class MemberController extends Controller
         }
         $this->layout = 'layout2';
         return $this->render('auth', ['model' => $model]);
+    }
+
+    public function actionUserinfo()
+    {
+        $this->layout = false;
+        $username = Yii::$app->request->get('username');
+        return $this->render('userinfo',['username'=>$username]);
     }
 }
