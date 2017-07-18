@@ -44,6 +44,7 @@ class MemberController extends Controller
     {
         $this->layout = false;
         $username = Yii::$app->request->get('username');
-        return $this->render('userinfo',['username'=>$username]);
+        $user = User::find()->where('username = :user',[':user'=>$username])->joinWith('profile')->one();
+        return $this->render('userinfo',['model'=>$user]);
     }
 }
