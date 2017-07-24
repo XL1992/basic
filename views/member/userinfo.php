@@ -9,9 +9,10 @@ $form = ActiveForm::begin([
         'template' => '<div class="field-row">{label}{input}</div>{error}',
     ],
 ]);
-echo $form->field($model,'username')->textInput(['value'=>$model->username]);
-echo $form->field($model,'useremail')->textInput(['value'=>$model->useremail]);
-echo $form->field($model,'useremail')->textInput(['value'=>$model->useremail]);
+echo $form->field($model,'username')->textInput();
+echo $form->field($model,'useremail')->textInput();
+echo $form->field($model->profile,'truename')->textInput(['value'=>isset($model->profile->truename)?:'']);
+
 
 ?>
 
