@@ -71,14 +71,18 @@ class User extends ActiveRecord
             $this->userpass = md5($this->userpass);
             try {
                 $trans = Yii::$app->db->beginTransaction();
-            if ($this->save(false)) {
-                $userid = $this->find()->select('userid')->where('useremail = :useremail', [':useremail' => $data['User']['useremail']])->one();
-                if (!empty($userid)) {
-                    $profile = new Profile();
-                    $profile->userid = $userid;
-                    $profile->createtime = time();
-                    $profileAdd=$profile->insert();
-                }
+                if ($this->save(false)) {
+                    $userid = $this->find()->select('userid')->where('useremail = :useremail', [':useremail' => $data['User']['useremail']])->one();
+                    if (!empty($userid)) {
+                        $profile = new Profile();
+                        $a = Profile::find()->where('userid = :userid',[':userid'=>$userid['userid']])->one();
+                        if (!empty($a)){
+                            throw new \Exception();
+                        }
+                        $profile->userid = $userid['userid'];
+                        $profile->createtime = time();
+                        $profileAdd = $profile->insert();
+                    }
                     if (empty($profileAdd)) {
                         throw new \Exception();
                     }

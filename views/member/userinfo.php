@@ -11,7 +11,7 @@ $form = ActiveForm::begin([
 ]);
 echo $form->field($model,'username')->textInput();
 echo $form->field($model,'useremail')->textInput();
-echo $form->field($model->profile,'truename')->textInput(['value'=>isset($model->profile->truename)?:'']);
+echo $form->field($model->profile,'truename')->textInput();
 
 
 ?>
