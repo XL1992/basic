@@ -37,6 +37,7 @@ class MemberController extends Controller
             }
         }
         $this->layout = 'layout2';
+        $model['userpass']='';
         return $this->render('auth', ['model' => $model]);
     }
 

@@ -53,7 +53,7 @@ class User extends ActiveRecord
             }
             $data = self::find()->where($loginname . '= :loginname and userpass = :userpass', [':loginname' => $this->loginname, ':userpass' => md5($this->userpass)])->one();
             if (is_null($data)) {
-                $this->addError('userpass','用户名或密码错误');
+                $this->addError('userpass', '用户名或密码错误');
             }
         }
     }
@@ -69,22 +69,40 @@ class User extends ActiveRecord
         if ($this->load($data) && $this->validate()) {
             $this->createtime = time();
             $this->userpass = md5($this->userpass);
+            try {
+                $trans = Yii::$app->db->beginTransaction();
             if ($this->save(false)) {
+                $userid = $this->find()->select('userid')->where('useremail = :useremail', [':useremail' => $data['User']['useremail']])->one();
+                if (!empty($userid)) {
+                    $profile = new Profile();
+                    $profile->userid = $userid;
+                    $profile->createtime = time();
+                    $profileAdd=$profile->insert();
+                }
+                    if (empty($profileAdd)) {
+                        throw new \Exception();
+                    }
+                }
+                $trans->commit();
                 return true;
+            } catch (\Exception $e) {
+                if (Yii::$app->db->getTransaction()) {
+                    $trans->rollBack();
+                }
             }
-            return false;
         }
         return false;
     }
 
-    public function regByMail($data)
+    public
+    function regByMail($data)
     {
         $this->scenario = 'regbymail';
         $data['User']['username'] = 'imooc_' . uniqid();
         $data['User']['userpass'] = uniqid();
         if ($this->load($data) && $this->validate()) {
             $mailer = Yii::$app->mailer->compose('createuser', ['username' => $data['User']['username'], 'userpass' => $data['User']['userpass']]);
-            $mailer->setFrom('15122644296@163.com');
+            $mailer->setFrom('shop_imooc@163.com');
             $mailer->setTo($data['User']['useremail']);
             $mailer->setSubject('慕课商城-新建用户');
             if ($mailer->send() && $this->reg($data, 'regbymail')) {
@@ -94,7 +112,8 @@ class User extends ActiveRecord
         return false;
     }
 
-    public function login($data)
+    public
+    function login($data)
     {
         $this->scenario = 'login';
         if ($this->load($data) && $this->validate()) {
@@ -102,8 +121,8 @@ class User extends ActiveRecord
             $session = Yii::$app->session;
             session_set_cookie_params($lifetime);
             $session['user'] = [
-                'loginname'=> $this->loginname,
-                'isLogin'=>'1',
+                'loginname' => $this->loginname,
+                'isLogin' => '1',
             ];
             return (bool)$session['isLogin'];
         }
