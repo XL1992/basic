@@ -46,6 +46,11 @@ class MemberController extends Controller
         $this->layout = false;
         $username = Yii::$app->request->get('username');
         $user = User::find()->where('username = :user',[':user'=>$username])->joinWith('profile')->one();
+        if (Yii::$app->request->isPost){
+            $post = Yii::$app->request->post();
+            print_r($post);
+
+        }
         return $this->render('userinfo',['model'=>$user]);
     }
 }
