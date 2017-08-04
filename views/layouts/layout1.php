@@ -55,7 +55,13 @@
                 <ul class="right">
                     <?php
                     if (\Yii::$app->session['user']['isLogin'] == 1): ?>
-                        您好 ，欢迎您回来<?php echo Yii::$app->session['user']['loginname'] ?>,<a href="<?php echo yii\helpers\Url::to(['member/userinfo','username'=>Yii::$app->session['user']['loginname']]) ?>">个人信息</a>
+                        <li>您好 ，欢迎您回来<?php echo Yii::$app->session['user']['loginname'] ?></li>
+                        <li>
+                            <a href="<?php echo yii\helpers\Url::to(['member/userinfo', 'username' => Yii::$app->session['user']['loginname']]) ?>">个人信息</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo yii\helpers\Url::to(['member/logout']) ?>">退出</a>
+                        </li>
                     <?php else: ?>
                         <li><a href="<?php echo yii\helpers\Url::to(['member/auth']) ?>">注册</a></li>
                         <li><a href="<?php echo yii\helpers\Url::to(['member/auth']) ?>">登录</a></li>

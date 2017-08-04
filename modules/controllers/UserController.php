@@ -59,6 +59,8 @@ class UserController extends CommonController
                 if (empty($res)){
                     throw new \Exception();
                 }
+            }else{
+                throw new \Exception();
             }
             if (!User::deleteAll('userid = :userid',[':userid'=>$userid])){
                 throw new \Exception();

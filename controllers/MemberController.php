@@ -10,6 +10,7 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use app\models\User;
+use app\models\Profile;
 use Yii;
 
 class MemberController extends Controller
@@ -27,6 +28,14 @@ class MemberController extends Controller
         return $this->render("auth", ['model' => $model]);
     }
 
+    public function actionLogout()
+    {
+        Yii::$app->session->removeAll();
+        if (!isset(Yii::$app->session['user']['isLogin'])) {
+            return $this->goBack(Yii::$app->request->referrer);
+        }
+    }
+
     public function actionReg()
     {
         $model = new User();
@@ -37,7 +46,7 @@ class MemberController extends Controller
             }
         }
         $this->layout = 'layout2';
-        $model['userpass']='';
+        $model['userpass'] = '';
         return $this->render('auth', ['model' => $model]);
     }
 
@@ -45,12 +54,17 @@ class MemberController extends Controller
     {
         $this->layout = false;
         $username = Yii::$app->request->get('username');
-        $user = User::find()->where('username = :user',[':user'=>$username])->joinWith('profile')->one();
+        $user = User::find()->where('username = :user', [':user' => $username])->joinWith('profile')->one();
+        return $this->render('userinfo', ['model' => $user]);
+    }
+
+    public function actionChangeinfo()
+    {
+        $this->layout = false;
+
         if (Yii::$app->request->isPost){
             $post = Yii::$app->request->post();
             print_r($post);
-
         }
-        return $this->render('userinfo',['model'=>$user]);
     }
 }

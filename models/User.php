@@ -30,14 +30,14 @@ class User extends ActiveRecord
     public function rules()
     {
         return [
-            ['username', 'required', 'message' => '用户名不能为空', 'on' => ['reg', 'regbymail']],
-            ['username', 'unique', 'message' => '该用户名已被注册', 'on' => ['reg', 'regbymail']],
+            ['username', 'required', 'message' => '用户名不能为空', 'on' => ['reg', 'regbymail', 'update']],
+            ['username', 'unique', 'message' => '该用户名已被注册', 'on' => ['reg', 'regbymail', 'update']],
             ['userpass', 'required', 'message' => '登录密码不能为空', 'on' => ['reg', 'regbymail']],
             ['repass', 'required', 'message' => '确认密码不能为空', 'on' => ['reg']],
             ['repass', 'compare', 'compareAttribute' => 'userpass', 'message' => '两次密码不一致', 'on' => ['reg']],
-            ['useremail', 'required', 'message' => '邮箱不能为空', 'on' => ['reg', 'regbymail']],
-            ['useremail', 'unique', 'message' => '该邮箱已被注册', 'on' => ['reg', 'regbymail']],
-            ['useremail', 'email', 'message' => '邮箱格式不正确', 'on' => ['reg', 'regbymail']],
+            ['useremail', 'required', 'message' => '邮箱不能为空', 'on' => ['reg', 'regbymail', 'update']],
+            ['useremail', 'unique', 'message' => '该邮箱已被注册', 'on' => ['reg', 'regbymail', 'update']],
+            ['useremail', 'email', 'message' => '邮箱格式不正确', 'on' => ['reg', 'regbymail', 'update']],
             ['loginname', 'required', 'message' => '登录名不能为空', 'on' => ['login']],
             ['userpass', 'required', 'message' => '密码不能为空', 'on' => ['login']],
             ['userpass', 'validatePass', 'on' => ['login']],
@@ -69,14 +69,14 @@ class User extends ActiveRecord
         if ($this->load($data) && $this->validate()) {
             $this->createtime = time();
             $this->userpass = md5($this->userpass);
+            $trans = Yii::$app->db->beginTransaction();
             try {
-                $trans = Yii::$app->db->beginTransaction();
                 if ($this->save(false)) {
                     $userid = $this->find()->select('userid')->where('useremail = :useremail', [':useremail' => $data['User']['useremail']])->one();
                     if (!empty($userid)) {
                         $profile = new Profile();
-                        $a = Profile::find()->where('userid = :userid',[':userid'=>$userid['userid']])->one();
-                        if (!empty($a)){
+                        $a = Profile::find()->where('userid = :userid', [':userid' => $userid['userid']])->one();
+                        if (!empty($a)) {
                             throw new \Exception();
                         }
                         $profile->userid = $userid['userid'];
@@ -98,8 +98,7 @@ class User extends ActiveRecord
         return false;
     }
 
-    public
-    function regByMail($data)
+    public function regByMail($data)
     {
         $this->scenario = 'regbymail';
         $data['User']['username'] = 'imooc_' . uniqid();
@@ -116,8 +115,7 @@ class User extends ActiveRecord
         return false;
     }
 
-    public
-    function login($data)
+    public function login($data)
     {
         $this->scenario = 'login';
         if ($this->load($data) && $this->validate()) {
@@ -131,6 +129,27 @@ class User extends ActiveRecord
             return (bool)$session['isLogin'];
         }
         return false;
+    }
 
+    public function updateInfo($data)
+    {
+        $this->scenario = 'update';
+        if ($this->load($data) && $this->validate()) {
+            $this->findone('userid = :userid',[':userid'=>$data['User']['userid']]);
+            $this->createtime = time();
+            $this->username = $data['User']['username'];
+            $this->useremail = $data['User']['useremail'];
+            $this->update();
+            return true;
+//            $trans = Yii::$app->db->beginTransaction();
+//            try {
+//                if ($this->)
+//            } catch (\Exception $e) {
+//                if (Yii::$app->db->getTransaction()) {
+//
+//                }
+//            }
+        }
+        return false;
     }
 }
